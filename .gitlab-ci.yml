@@ -1,0 +1,19 @@
+image: "python:3.7"
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+
+services:
+  - docker:19.03.1-dind
+
+stages:
+  - Static Analysis
+
+black:
+  stage: Static Analysis
+  only:
+    - merge_requests
+  script:
+    - pip install black==19.3b0
+    - black --check biometrics_client
