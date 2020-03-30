@@ -71,7 +71,9 @@ class ElementHumanBiometrics:
             print(msg)
 
     def apply(
-        self, video_file_path: Path, analyses: Union[List[str], Tuple[str, ...]]
+        self,
+        video_file_path: Path,
+        analyses: Union[List[str], Tuple[str, ...]] = ("emotion",),
     ) -> Dict[str, Union[str, Dict[str, str]]]:
         """Send a video to the Biometrics API for analysis
 
@@ -136,7 +138,7 @@ class ElementHumanBiometrics:
     def apply_and_wait(
         self,
         video_file_path: Path,
-        analyses: Union[List[str], Tuple[str, ...]],
+        analyses: Union[List[str], Tuple[str, ...]] = ("emotion",),
         max_wait: int = 60 * 30,
     ) -> Dict[str, Any]:
         """Send a video to the Biometrics API for analysis
