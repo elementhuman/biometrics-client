@@ -172,7 +172,7 @@ class ElementHumanBiometrics:
         while (time.time() - start_time) < max_wait:
             try:
                 return self.results(task_id)
-            except requests.HTTPError:
+            except ResultsNotReady:
                 time.sleep(self._sleep_time)
         else:
             raise requests.ConnectTimeout(f"Timed out waiting for task '{task_id}'")
