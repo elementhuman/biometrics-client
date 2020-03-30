@@ -109,7 +109,6 @@ class ElementHumanBiometrics:
             headers={"Content-Type": multipart_data.content_type, **self._credentials},
         )
         r.raise_for_status()
-        self._print(f"Upload Complete. Response: {r.json()}.")
         return r.json()
 
     def results(self, task_id: str) -> Dict[str, Any]:
@@ -168,6 +167,7 @@ class ElementHumanBiometrics:
         """
         task = self.apply(video_file_path, analyses=analyses)
         task_id = task["response"]["task_id"]
+        self._print(f"Upload Complete. Task ID: {task_id}.")
 
         start_time = time.time()
         while (time.time() - start_time) < max_wait:
