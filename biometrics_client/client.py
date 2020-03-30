@@ -131,7 +131,7 @@ class ElementHumanBiometrics:
             timeout=self.timeout,
             headers=self._credentials,
         )
-        if r.status_code == 400:
+        if r.status_code == 400 and "not ready" in r.text.lower():
             raise ResultsNotReady(r.text)
         r.raise_for_status()
         return r.json()
