@@ -33,6 +33,7 @@ class ElementHumanBiometrics:
         timeout (int): the maximum amount of time to wait for a
             response from the server in seconds.
         url (str): the URL for the API
+        verbose (bool): if True print additional information.
 
     Examples:
         >>> biometrics = ElementHumanBiometrics(
