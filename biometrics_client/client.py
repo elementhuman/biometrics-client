@@ -25,6 +25,10 @@ def _get_file_type(path: Path) -> str:
     return path.suffix.lstrip(".")
 
 
+def _not_ready(r: Response) -> bool:
+    return r.status_code == 400 and "not ready" in r.text.lower()
+
+
 class ElementHumanBiometrics:
     """Simple tool for interacting with Element Human's Biometrics API
 
@@ -138,7 +142,7 @@ class ElementHumanBiometrics:
             timeout=self.timeout,
             headers=self._credentials,
         )
-        if r.status_code == 400 and "not ready" in r.text.lower():
+        if _not_ready(r):
             raise ResultsNotReady(r.text)
         self._response_validator(r)
         return r.json()
