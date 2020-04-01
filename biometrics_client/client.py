@@ -6,14 +6,14 @@
 """
 import io
 import requests
-import time
 from biometrics_client.exceptions import ResultsNotReady
+from biometrics_client._utils import task_waiter
 from os.path import basename
 from pathlib import Path
 from urllib.parse import urljoin
 from requests.models import Response
 from requests_toolbelt import MultipartEncoder
-from typing import Any, Dict, List, Union, Tuple
+from typing import Any, Dict, List, Union, Tuple, Optional
 
 
 def _open_as_bytes(path: Path) -> io.BytesIO:
@@ -123,11 +123,13 @@ class ElementHumanBiometrics:
         self._response_validator(r)
         return r.json()
 
-    def results(self, task_id: str) -> Dict[str, Any]:
+    def results(self, task_id: str, max_wait: Optional[int] = None) -> Dict[str, Any]:
         """Get a task from the Biometrics API.
 
         Args:
             task_id (str): a task ID obtained from the /apply endpoint
+            max_wait (int, optional): the maximum amount of time to wait
+                for the results in seconds.
 
         Returns:
             response (dict)
@@ -137,21 +139,33 @@ class ElementHumanBiometrics:
               returned if the results are not yet ready.
 
         """
-        r = requests.get(
-            urljoin(self.url, f"results/{task_id}"),
-            timeout=self.timeout,
-            headers=self._credentials,
+
+        def fetch() -> Dict[str, Any]:
+            r = requests.get(
+                urljoin(self.url, f"results/{task_id}"),
+                timeout=self.timeout,
+                headers=self._credentials,
+            )
+            if _not_ready(r):
+                raise ResultsNotReady(r.text)
+            self._response_validator(r)
+            return r.json()
+
+        return task_waiter(
+            func=fetch,
+            max_wait=max_wait,
+            sleep_time=self._sleep_time,
+            handled_exceptions=(ResultsNotReady,),
+            timeout_exception=requests.ConnectTimeout(
+                f"Timed out waiting for task '{task_id}'"
+            ),
         )
-        if _not_ready(r):
-            raise ResultsNotReady(r.text)
-        self._response_validator(r)
-        return r.json()
 
     def apply_and_wait(
         self,
         video_file_path: Path,
         analyses: Union[List[str], Tuple[str, ...]] = ("emotion",),
-        max_wait: int = 60 * 30,
+        max_wait: Optional[int] = 60 * 30,
     ) -> Dict[str, Any]:
         """Send a video to the Biometrics API for analysis
         and wait for the results.
@@ -166,8 +180,8 @@ class ElementHumanBiometrics:
                     * 'emotions': compute Ekman emotions for the video,
                        along with quality metrics.
 
-            max_wait (int): the maximum amount of time to wait for the results
-                in seconds.
+            max_wait (int, optional): the maximum amount of time to wait
+                for the results in seconds.
 
         Returns:
             response (dict)
@@ -180,12 +194,4 @@ class ElementHumanBiometrics:
         task = self.apply(video_file_path, analyses=analyses)
         task_id = task["response"]["task_id"]
         self._print(f"Upload Complete. Task ID: {task_id}.")
-
-        start_time = time.time()
-        while (time.time() - start_time) < max_wait:
-            try:
-                return self.results(task_id)
-            except ResultsNotReady:
-                time.sleep(self._sleep_time)
-        else:
-            raise requests.ConnectTimeout(f"Timed out waiting for task '{task_id}'")
+        return self.results(task_id, max_wait=max_wait)
