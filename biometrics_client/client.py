@@ -12,7 +12,7 @@ from urllib.parse import urljoin
 from os.path import basename
 from requests_toolbelt import MultipartEncoder
 from typing import Any, Dict, List, Union, Tuple
-from biometrics_client._exceptions import ResultsNotReady
+from biometrics_client.exceptions import ResultsNotReady
 
 
 def _open_as_bytes(path: Path) -> io.BytesIO:
