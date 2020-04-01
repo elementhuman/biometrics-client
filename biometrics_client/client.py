@@ -7,12 +7,13 @@
 import io
 import requests
 import time
+from biometrics_client.exceptions import ResultsNotReady
+from os.path import basename
 from pathlib import Path
 from urllib.parse import urljoin
-from os.path import basename
+from requests.models import Response
 from requests_toolbelt import MultipartEncoder
 from typing import Any, Dict, List, Union, Tuple
-from biometrics_client.exceptions import ResultsNotReady
 
 
 def _open_as_bytes(path: Path) -> io.BytesIO:
@@ -71,6 +72,13 @@ class ElementHumanBiometrics:
         if self._verbose:
             print(msg)
 
+    def _response_validator(self, r: Response) -> None:
+        try:
+            r.raise_for_status()
+        except requests.exceptions.RequestException as error:
+            self._print(r.text)
+            raise error
+
     def apply(
         self,
         video_file_path: Path,
@@ -108,7 +116,7 @@ class ElementHumanBiometrics:
             params=dict(analyses=list(analyses)),
             headers={"Content-Type": multipart_data.content_type, **self._credentials},
         )
-        r.raise_for_status()
+        self._response_validator(r)
         return r.json()
 
     def results(self, task_id: str) -> Dict[str, Any]:
@@ -132,7 +140,7 @@ class ElementHumanBiometrics:
         )
         if r.status_code == 400 and "not ready" in r.text.lower():
             raise ResultsNotReady(r.text)
-        r.raise_for_status()
+        self._response_validator(r)
         return r.json()
 
     def apply_and_wait(
