@@ -5,7 +5,7 @@ Client Library for the Element Human BiometricsAPI
 ## Installation
 
 ```shell script
-pip install git+ssh://git@gitlab.com/elementhuman/biometrics_client.git
+pip install git+ssh://git@gitlab.com/elementhuman/biometricsclient.git
 ```
 
 ## Example Usage
