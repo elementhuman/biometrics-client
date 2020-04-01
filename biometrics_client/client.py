@@ -45,7 +45,8 @@ class ElementHumanBiometrics:
         ...    access_key="YOUR-ACCESS-KEY-HERE",
         ...    secret_key="YOUR-SECRET-KEY-HERE"
         ... )
-        >>> result = biometrics.apply_and_wait(
+        ...
+        >>> response = biometrics.apply_and_wait(
         ...     video_file_path=Path("path/to/video/file.mp4"),
         ...     analyses=["emotion"],
         ... )
