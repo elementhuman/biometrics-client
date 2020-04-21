@@ -84,6 +84,11 @@ class ElementHumanBiometrics:
             self._print(r.text)
             raise error
 
+    def ping(self) -> Dict[str, str]:
+        r = requests.get(urljoin(self.url, "ping"))
+        self._response_validator(r)
+        return r.json()
+
     def apply(
         self,
         video_file_path: Path,
