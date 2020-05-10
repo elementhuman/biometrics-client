@@ -201,10 +201,6 @@ class ElementHumanBiometrics:
                 task_id (str): the task id
                 response (dict): the response payload.
 
-        Warnings:
-            * a response with a status code of 400 will be
-              returned if the results are not yet ready.
-
         """
         task = self.apply(video_file_path, analyses=analyses)
         task_id = task["response"]["task_id"]
