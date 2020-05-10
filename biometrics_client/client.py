@@ -6,6 +6,7 @@
 """
 import io
 import requests
+from biometrics_client.auth import BiometricsAuth
 from biometrics_client.exceptions import ResultsNotReady
 from biometrics_client._utils import task_waiter
 from os.path import basename
@@ -33,17 +34,25 @@ class ElementHumanBiometrics:
     """Simple tool for interacting with Element Human's Biometrics API
 
     Args:
-        access_key (str): an access key for the API
-        secret_key (str): a secret key for the API
+        auth (BiometricsAuth): an access key for the API
         timeout (int): the maximum amount of time to wait for a
             response from the server in seconds.
         url (str): the URL for the API
         verbose (bool): if True print additional information.
 
+    Notes:
+        * Authorization (``auth``) type depends on the ``url``
+          being used. If unsure which form of authorization to use,
+          use ``Auth1``.
+
     Examples:
+        >>> from biometrics_client import Auth1, ElementHumanBiometrics
+        ...
         >>> biometrics = ElementHumanBiometrics(
-        ...    access_key="YOUR-ACCESS-KEY-HERE",
-        ...    secret_key="YOUR-SECRET-KEY-HERE"
+        ...    auth=Auth1(
+        ...         access_key="YOUR-ACCESS-KEY-HERE",
+        ...         secret_key="YOUR-SECRET-KEY-HERE"
+        ...     )
         ... )
         ...
         >>> response = biometrics.apply_and_wait(
@@ -55,14 +64,12 @@ class ElementHumanBiometrics:
 
     def __init__(
         self,
-        access_key: str,
-        secret_key: str,
+        auth: BiometricsAuth,
         timeout: int = 30,
         url: str = "https://biometrics.elementapis.com/public/v0.1/",
         verbose: bool = True,
     ) -> None:
-        self.access_key = access_key
-        self.secret_key = secret_key
+        self.auth = auth
         self.timeout = timeout
         self.url = url
         self._verbose = verbose
@@ -71,7 +78,7 @@ class ElementHumanBiometrics:
 
     @property
     def _credentials(self) -> Dict[str, str]:
-        return {"x-access-key": self.access_key, "x-secret-key": self.secret_key}
+        return self.auth.credentials
 
     def _print(self, msg: str) -> None:
         if self._verbose:
