@@ -46,6 +46,7 @@ class ElementHumanBiometrics:
           use ``Auth1``.
 
     Examples:
+        >>> from pathlib import Path
         >>> from biometrics_client import Auth1, ElementHumanBiometrics
         ...
         >>> biometrics = ElementHumanBiometrics(
