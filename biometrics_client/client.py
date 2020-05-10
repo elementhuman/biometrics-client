@@ -179,7 +179,7 @@ class ElementHumanBiometrics:
         video_file_path: Path,
         analyses: Union[List[str], Tuple[str, ...]] = ("emotion",),
         max_wait: Optional[int] = 60 * 30,
-    ) -> Dict[str, Any]:
+    ) -> Tuple[str, Dict[str, Any]]:
         """Send a video to the Biometrics API for analysis
         and wait for the results.
 
@@ -197,7 +197,9 @@ class ElementHumanBiometrics:
                 for the results in seconds.
 
         Returns:
-            response (dict)
+            tuple:
+                task_id (str): the task id
+                response (dict): the response payload.
 
         Warnings:
             * a response with a status code of 400 will be
@@ -207,4 +209,4 @@ class ElementHumanBiometrics:
         task = self.apply(video_file_path, analyses=analyses)
         task_id = task["response"]["task_id"]
         self._print(f"Upload Complete. Task ID: {task_id}.")
-        return self.results(task_id, max_wait=max_wait)
+        return task_id, self.results(task_id, max_wait=max_wait)
