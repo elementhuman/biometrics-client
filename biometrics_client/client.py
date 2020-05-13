@@ -59,8 +59,6 @@ class ElementHumanBiometrics:
         self.url = url
         self._verbose = verbose
 
-        self._sleep_time: int = 10
-
     @property
     def credentials(self) -> Dict[str, str]:
         """API Credentials"""
@@ -132,11 +130,15 @@ class ElementHumanBiometrics:
         self._response_validator(r)
         return r.json()
 
-    def results(self, task_id: str, max_wait: Optional[int] = None) -> Dict[str, Any]:
+    def results(
+        self, task_id: str, check_interval: int = 10, max_wait: Optional[int] = None
+    ) -> Dict[str, Any]:
         """Get a task from the Biometrics API.
 
         Args:
             task_id (str): a task ID obtained from the /apply endpoint
+            check_interval (int): time to wait between checks to determine
+                if results are ready. Only applies if ``max_wait`` is not ``None``.
             max_wait (int, optional): the maximum amount of time to wait
                 for the results in seconds.
 
@@ -166,7 +168,7 @@ class ElementHumanBiometrics:
         return task_waiter(
             func=fetch,
             max_wait=max_wait,
-            sleep_time=self._sleep_time,
+            sleep_time=check_interval,
             handled_exceptions=(ResultsNotReady,),
             timeout_exception=requests.ConnectTimeout(
                 f"Timed out waiting for task '{task_id}'"
