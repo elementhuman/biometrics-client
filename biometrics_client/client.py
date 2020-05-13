@@ -30,6 +30,22 @@ def _not_ready(r: Response) -> bool:
     return r.status_code == 400 and "not ready" in r.text.lower()
 
 
+def _add_multipart_data(
+    video_file_path: Path, metadata_file_path: Optional[Path] = None
+) -> MultipartEncoder:
+    def make_value(path: Path) -> Dict[str, Union[bytes, str]]:
+        return (
+            basename(str(path)),
+            _open_as_bytes(path),
+            f"video/{_get_file_type(path)}",
+        )
+
+    fields = dict(video_file=make_value(video_file_path))
+    if metadata_file_path:
+        fields["metadata"] = make_value(metadata_file_path)
+    return MultipartEncoder(fields)
+
+
 class ElementHumanBiometrics:
     """Simple tool for interacting with Element Human's Biometrics API
 
@@ -100,12 +116,14 @@ class ElementHumanBiometrics:
     def apply(
         self,
         video_file_path: Path,
+        metadata_file_path: Optional[Path] = None,
         analyses: Union[List[str], Tuple[str, ...]] = ("emotion",),
     ) -> Dict[str, Union[str, Dict[str, str]]]:
         """Send a video to the Biometrics API for analysis
 
         Args:
             video_file_path (Path): a system path to a video
+            metadata_file_path (Path, optional): a path to a metadata file.
             analyses (list, tuple): a list of strings denoting the
                 analyses one would like performed on the video.
 
@@ -118,20 +136,14 @@ class ElementHumanBiometrics:
             response (dict)
 
         """
-        multipart_data = MultipartEncoder(
-            fields={
-                "video_file": (
-                    basename(str(video_file_path)),
-                    _open_as_bytes(video_file_path),
-                    f"video/{_get_file_type(video_file_path)}",
-                )
-            }
+        multipart_data = _add_multipart_data(
+            video_file_path, metadata_file_path=metadata_file_path
         )
         r = requests.post(
             urljoin(self.url, "apply"),
             data=multipart_data,
             timeout=self.timeout,
-            params=dict(analyses=list(analyses)),
+            params=dict(analyses=analyses),
             headers={"Content-Type": multipart_data.content_type, **self._credentials},
         )
         self._response_validator(r)
@@ -178,7 +190,8 @@ class ElementHumanBiometrics:
     def apply_and_wait(
         self,
         video_file_path: Path,
-        analyses: Union[List[str], Tuple[str, ...]] = ("emotion",),
+        metadata_file_path: Optional[Path] = None,
+        analyses: Union[str, List[str], Tuple[str, ...]] = ("emotion",),
         max_wait: Optional[int] = 60 * 30,
     ) -> Tuple[str, Dict[str, Any]]:
         """Send a video to the Biometrics API for analysis
@@ -186,13 +199,23 @@ class ElementHumanBiometrics:
 
         Args:
             video_file_path (Path): a system path to a video
+            metadata_file_path (Path, optional): a path to a metadata file.
             analyses (list, tuple): a list of strings denoting the
                 analyses one would like performed on the video.
 
                 Options:
 
-                    * 'emotions': compute Ekman emotions for the video,
-                       along with quality metrics.
+                    * if a string, must be 'all'
+
+                    * if a list of strings or a tuple of strings
+                        defining analyses to perform. These can be any of
+                        the following:
+
+                            * 'face': Face bound box.
+                            * 'eyes': Eye bounding boxes. Depends on: 'face'.
+                            * 'emotion': compute Ekman emotions for the video,
+                                    along with quality metrics. Depends on: 'face'.
+                            * 'gaze': eye gaze Depends on: 'face', 'eyes'.
 
             max_wait (int, optional): the maximum amount of time to wait
                 for the results in seconds.
@@ -203,7 +226,11 @@ class ElementHumanBiometrics:
                 response (dict): the response payload.
 
         """
-        task = self.apply(video_file_path, analyses=analyses)
+        task = self.apply(
+            video_file_path=video_file_path,
+            metadata_file_path=metadata_file_path,
+            analyses=analyses,
+        )
         task_id = task["response"]["task_id"]
         self._print(f"Upload Complete. Task ID: {task_id}.")
         return task_id, self.results(task_id, max_wait=max_wait)
