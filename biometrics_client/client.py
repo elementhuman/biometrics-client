@@ -132,6 +132,9 @@ class ElementHumanBiometrics:
             * a response with a status code of 400 will be
               returned if the results are not yet ready.
 
+        Raises:
+            * ``ResultsNotReady`` is results are not yet ready.
+
         """
 
         def fetch() -> Dict[str, Any]:
@@ -192,6 +195,9 @@ class ElementHumanBiometrics:
             tuple:
                 task_id (str): the task id
                 response (dict): the response payload.
+
+        Raises:
+            * ``ResultsNotReady`` is results are not yet ready.
 
         """
         task = self.apply(
