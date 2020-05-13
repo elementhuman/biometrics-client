@@ -4,46 +4,14 @@
     ~~~~~~
 
 """
-import io
 import requests
 from biometrics_client.auth import BiometricsAuth
 from biometrics_client.exceptions import ResultsNotReady
-from biometrics_client._utils import task_waiter
-from os.path import basename
+from biometrics_client._utils import task_waiter, add_multipart_data, not_ready_signal
 from pathlib import Path
 from urllib.parse import urljoin
 from requests.models import Response
-from requests_toolbelt import MultipartEncoder
 from typing import Any, Dict, List, Union, Tuple, Optional
-
-
-def _open_as_bytes(path: Path) -> io.BytesIO:
-    with path.open("rb") as f:
-        return io.BytesIO(f.read())
-
-
-def _get_file_type(path: Path) -> str:
-    return path.suffix.lstrip(".")
-
-
-def _not_ready(r: Response) -> bool:
-    return r.status_code == 400 and "not ready" in r.text.lower()
-
-
-def _add_multipart_data(
-    video_file_path: Path, metadata_file_path: Optional[Path] = None
-) -> MultipartEncoder:
-    def make_value(path: Path) -> Dict[str, Union[bytes, str]]:
-        return (
-            basename(str(path)),
-            _open_as_bytes(path),
-            f"video/{_get_file_type(path)}",
-        )
-
-    fields = dict(video_file=make_value(video_file_path))
-    if metadata_file_path:
-        fields["metadata"] = make_value(metadata_file_path)
-    return MultipartEncoder(fields)
 
 
 class ElementHumanBiometrics:
@@ -136,7 +104,7 @@ class ElementHumanBiometrics:
             response (dict)
 
         """
-        multipart_data = _add_multipart_data(
+        multipart_data = add_multipart_data(
             video_file_path, metadata_file_path=metadata_file_path
         )
         r = requests.post(
@@ -172,7 +140,7 @@ class ElementHumanBiometrics:
                 timeout=self.timeout,
                 headers=self._credentials,
             )
-            if _not_ready(r):
+            if not_ready_signal(r):
                 raise ResultsNotReady(r.text)
             self._response_validator(r)
             return r.json()
