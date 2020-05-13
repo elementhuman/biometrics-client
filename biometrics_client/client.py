@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Union, Tuple, Optional
 
 
 class ElementHumanBiometrics:
-    """Simple tool for interacting with Element Human's Biometrics API
+    """Client for the Element Human Biometrics API.
 
     Args:
         auth (BiometricsAuth): an access key for the API
