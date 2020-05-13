@@ -78,6 +78,12 @@ class ElementHumanBiometrics:
             raise error
 
     def ping(self) -> Dict[str, str]:
+        """Ping the API.
+
+        Returns:
+            dict
+
+        """
         r = requests.get(urljoin(self.url, "ping"))
         self._response_validator(r)
         return r.json()
