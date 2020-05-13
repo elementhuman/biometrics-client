@@ -74,7 +74,7 @@ def not_ready_signal(r: Response) -> bool:
     return r.status_code == 400 and "not ready" in r.text.lower()
 
 
-def add_multipart_data(
+def create_multipart_encoder(
     video_file_path: Path, metadata_file_path: Optional[Path] = None
 ) -> MultipartEncoder:
     """Create a multipart encoder

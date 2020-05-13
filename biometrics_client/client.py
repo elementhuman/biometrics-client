@@ -7,7 +7,7 @@
 import requests
 from biometrics_client.auth import BiometricsAuth
 from biometrics_client.exceptions import ResultsNotReady
-from biometrics_client._utils import task_waiter, add_multipart_data, not_ready_signal
+from biometrics_client._utils import task_waiter, create_multipart_encoder, not_ready_signal
 from pathlib import Path
 from urllib.parse import urljoin
 from requests.models import Response
@@ -104,7 +104,7 @@ class ElementHumanBiometrics:
             response (dict)
 
         """
-        multipart_data = add_multipart_data(
+        multipart_data = create_multipart_encoder(
             video_file_path, metadata_file_path=metadata_file_path
         )
         r = requests.post(
