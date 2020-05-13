@@ -29,12 +29,12 @@ def task_waiter(
     handled_exceptions: Optional[Tuple[Type[BaseException], ...]] = None,
     timeout_exception: Optional[BaseException] = None,
 ) -> Any:
-    """Wait for ``func`` to sucessfully return.
+    """Wait for ``func`` to successfully return.
 
     Args:
         func (callable): a function to run
         max_wait (int, optional): the maximum amount of time to
-            wait for ``func`` to sucessfully return.
+            wait for ``func`` to successfully return.
         sleep_time (int): the amount of time to sleep between
             executions of ``func``
         handled_exceptions (tuple, optional): one or
