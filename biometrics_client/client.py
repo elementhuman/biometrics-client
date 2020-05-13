@@ -63,6 +63,7 @@ class ElementHumanBiometrics:
 
     @property
     def credentials(self) -> Dict[str, str]:
+        """API Credentials"""
         return self.auth.credentials
 
     def _print(self, msg: str) -> None:
