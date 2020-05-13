@@ -7,7 +7,11 @@
 import requests
 from biometrics_client.auth import BiometricsAuth
 from biometrics_client.exceptions import ResultsNotReady
-from biometrics_client._utils import task_waiter, create_multipart_encoder, not_ready_signal
+from biometrics_client._utils import (
+    task_waiter,
+    create_multipart_encoder,
+    not_ready_signal,
+)
 from pathlib import Path
 from urllib.parse import urljoin
 from requests.models import Response
