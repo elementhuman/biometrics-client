@@ -22,7 +22,7 @@ class ElementHumanBiometrics:
     """Client for the Element Human Biometrics API.
 
     Args:
-        auth (BiometricsAuth): an access key for the API
+        auth (BiometricsAuth): api authorization.
         timeout (int): the maximum amount of time to wait for a
             response from the server in seconds.
         url (str): the URL for the API
