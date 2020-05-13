@@ -85,20 +85,28 @@ class ElementHumanBiometrics:
         self,
         video_file_path: Path,
         metadata_file_path: Optional[Path] = None,
-        analyses: Union[List[str], Tuple[str, ...]] = ("emotion",),
+        analyses: Union[str, List[str], Tuple[str, ...]] = ("emotion",),
     ) -> Dict[str, Union[str, Dict[str, str]]]:
         """Send a video to the Biometrics API for analysis
 
         Args:
             video_file_path (Path): a system path to a video
             metadata_file_path (Path, optional): a path to a metadata file.
-            analyses (list, tuple): a list of strings denoting the
-                analyses one would like performed on the video.
+            analyses (str, list, tuple): analyses to perform on the video.
 
                 Options:
 
-                    * 'emotions': compute Ekman emotions for the video,
-                       along with quality metrics.
+                    * if a string, must be 'all'
+
+                    * if a list of strings or a tuple of strings
+                        defining analyses to perform. These can be any of
+                        the following:
+
+                            * 'face': Face bound box.
+                            * 'eyes': Eye bounding boxes. Depends on: 'face'.
+                            * 'emotion': compute Ekman emotions for the video,
+                                    along with quality metrics. Depends on: 'face'.
+                            * 'gaze': eye gaze Depends on: 'face', 'eyes'.
 
         Returns:
             response (dict)
@@ -171,8 +179,7 @@ class ElementHumanBiometrics:
         Args:
             video_file_path (Path): a system path to a video
             metadata_file_path (Path, optional): a path to a metadata file.
-            analyses (list, tuple): a list of strings denoting the
-                analyses one would like performed on the video.
+            analyses (str, list, tuple): analyses to perform on the video.
 
                 Options:
 
