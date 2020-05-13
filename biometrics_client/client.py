@@ -62,7 +62,7 @@ class ElementHumanBiometrics:
         self._sleep_time: int = 10
 
     @property
-    def _credentials(self) -> Dict[str, str]:
+    def credentials(self) -> Dict[str, str]:
         return self.auth.credentials
 
     def _print(self, msg: str) -> None:
@@ -120,7 +120,7 @@ class ElementHumanBiometrics:
             data=multipart_data,
             timeout=self.timeout,
             params=dict(analyses=analyses),
-            headers={"Content-Type": multipart_data.content_type, **self._credentials},
+            headers={"Content-Type": multipart_data.content_type, **self.credentials},
         )
         self._response_validator(r)
         return r.json()
@@ -149,7 +149,7 @@ class ElementHumanBiometrics:
             r = requests.get(
                 urljoin(self.url, f"results/{task_id}"),
                 timeout=self.timeout,
-                headers=self._credentials,
+                headers=self.credentials,
             )
             if not_ready_signal(r):
                 raise ResultsNotReady(r.text)
