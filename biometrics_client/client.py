@@ -27,6 +27,8 @@ class ElementHumanBiometrics:
             response from the server in seconds.
         url (str): the URL for the API
         verbose (bool): if True print additional information.
+        **kwargs (Keyword Args): Keyword arguments to pass to
+            ``requests``.
 
     Notes:
         * Authorization (``auth``) type depends on the ``url``
@@ -57,11 +59,13 @@ class ElementHumanBiometrics:
         timeout: int = 30,
         url: str = "https://biometrics.elementapis.com/public/v0.1/",
         verbose: bool = True,
+        **kwargs: Any
     ) -> None:
         self.auth = auth
         self.timeout = timeout
         self.url = url
         self._verbose = verbose
+        self._kwargs = kwargs
 
     @property
     def credentials(self) -> Dict[str, str]:
@@ -86,7 +90,7 @@ class ElementHumanBiometrics:
             dict
 
         """
-        r = requests.get(urljoin(self.url, "ping"))
+        r = requests.get(urljoin(self.url, "ping"), **self._kwargs)
         self._response_validator(r)
         return r.json()
 
@@ -130,6 +134,7 @@ class ElementHumanBiometrics:
             timeout=self.timeout,
             params=dict(analyses=analyses),
             headers={"Content-Type": multipart_data.content_type, **self.credentials},
+            **self._kwargs
         )
         self._response_validator(r)
         return r.json()
@@ -163,6 +168,7 @@ class ElementHumanBiometrics:
                 urljoin(self.url, f"results/{task_id}"),
                 timeout=self.timeout,
                 headers=self.credentials,
+                **self._kwargs
             )
             if not_ready_signal(r):
                 raise ResultsNotReady(r.text)
