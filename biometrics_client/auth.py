@@ -24,7 +24,7 @@ class BiometricsAuth:
 
     """
 
-    def __init__(self, **credentials) -> None:
+    def __init__(self, **credentials: str) -> None:
         _credentials_type_checker(credentials)
         self.credentials = credentials
 
