@@ -46,9 +46,9 @@ class Auth2(BiometricsAuth):
     """Second form of Biometrics API authorization.
 
     Args:
-        authorization (str): an access token.
+        token (str): an access token.
 
     """
 
-    def __init__(self, authorization: str) -> None:
+    def __init__(self, token: str) -> None:
         super().__init__(authorization=authorization)
