@@ -51,4 +51,4 @@ class Auth2(BiometricsAuth):
     """
 
     def __init__(self, token: str) -> None:
-        super().__init__(authorization=authorization)
+        super().__init__(authorization=token)
