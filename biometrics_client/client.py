@@ -121,6 +121,7 @@ class ElementHumanBiometrics:
                             * 'emotion': compute Ekman emotions for the video,
                                     along with quality metrics. Depends on: 'face'.
                             * 'gaze': eye gaze Depends on: 'face', 'eyes'.
+
             **kwargs (Keyword Args): Keyword arguments to pass to
                 ``requests``.
 
