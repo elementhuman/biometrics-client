@@ -27,8 +27,6 @@ class ElementHumanBiometrics:
             response from the server in seconds.
         url (str): the URL for the API
         verbose (bool): if True print additional information.
-        **kwargs (Keyword Args): Keyword arguments to pass to
-            ``requests``.
 
     Notes:
         * Authorization (``auth``) type depends on the ``url``
@@ -59,13 +57,11 @@ class ElementHumanBiometrics:
         timeout: int = 30,
         url: str = "https://biometrics.elementapis.com/public/v0.1/",
         verbose: bool = True,
-        **kwargs: Any
     ) -> None:
         self.auth = auth
         self.timeout = timeout
         self.url = url
         self._verbose = verbose
-        self._kwargs = kwargs
 
     @property
     def credentials(self) -> Dict[str, str]:
@@ -83,14 +79,18 @@ class ElementHumanBiometrics:
             self._print(r.text)
             raise error
 
-    def ping(self) -> Dict[str, str]:
+    def ping(self, **kwargs: Any) -> Dict[str, str]:
         """Ping the API.
+
+        Args:
+            **kwargs (Keyword Args): Keyword arguments to pass to
+            ``requests``.
 
         Returns:
             dict
 
         """
-        r = requests.get(urljoin(self.url, "ping"), **self._kwargs)
+        r = requests.get(urljoin(self.url, "ping"), **kwargs)
         self._response_validator(r)
         return r.json()
 
@@ -99,6 +99,7 @@ class ElementHumanBiometrics:
         video_file_path: Path,
         metadata_file_path: Optional[Path] = None,
         analyses: Union[str, List[str], Tuple[str, ...]] = ("emotion",),
+        **kwargs: Any,
     ) -> Dict[str, Union[str, Dict[str, str]]]:
         """Send a video to the Biometrics API for analysis
 
@@ -120,6 +121,8 @@ class ElementHumanBiometrics:
                             * 'emotion': compute Ekman emotions for the video,
                                     along with quality metrics. Depends on: 'face'.
                             * 'gaze': eye gaze Depends on: 'face', 'eyes'.
+            **kwargs (Keyword Args): Keyword arguments to pass to
+                ``requests``.
 
         Returns:
             response (dict)
@@ -134,13 +137,17 @@ class ElementHumanBiometrics:
             timeout=self.timeout,
             params=dict(analyses=analyses),
             headers={"Content-Type": multipart_data.content_type, **self.credentials},
-            **self._kwargs
+            **kwargs,
         )
         self._response_validator(r)
         return r.json()
 
     def results(
-        self, task_id: str, check_interval: int = 10, max_wait: Optional[int] = None
+        self,
+        task_id: str,
+        check_interval: int = 10,
+        max_wait: Optional[int] = None,
+        **kwargs: Any,
     ) -> Dict[str, Any]:
         """Get a task from the Biometrics API.
 
@@ -150,6 +157,8 @@ class ElementHumanBiometrics:
                 if results are ready. Only applies if ``max_wait`` is not ``None``.
             max_wait (int, optional): the maximum amount of time to wait
                 for the results in seconds.
+            **kwargs (Keyword Args): Keyword arguments to pass to
+                ``requests``.
 
         Returns:
             response (dict)
@@ -168,7 +177,7 @@ class ElementHumanBiometrics:
                 urljoin(self.url, f"results/{task_id}"),
                 timeout=self.timeout,
                 headers=self.credentials,
-                **self._kwargs
+                **kwargs,
             )
             if not_ready_signal(r):
                 raise ResultsNotReady(r.text)
@@ -191,6 +200,7 @@ class ElementHumanBiometrics:
         metadata_file_path: Optional[Path] = None,
         analyses: Union[str, List[str], Tuple[str, ...]] = ("emotion",),
         max_wait: Optional[int] = 60 * 30,
+        **kwargs: Any,
     ) -> Tuple[str, Dict[str, Any]]:
         """Send a video to the Biometrics API for analysis
         and wait for the results.
@@ -216,6 +226,8 @@ class ElementHumanBiometrics:
 
             max_wait (int, optional): the maximum amount of time to wait
                 for the results in seconds.
+            **kwargs (Keyword Args): Keyword arguments to pass to
+                ``requests``.
 
         Returns:
             tuple:
@@ -230,7 +242,8 @@ class ElementHumanBiometrics:
             video_file_path=video_file_path,
             metadata_file_path=metadata_file_path,
             analyses=analyses,
+            **kwargs,
         )
         task_id = task["response"]["task_id"]
         self._print(f"Upload Complete. Task ID: {task_id}.")
-        return task_id, self.results(task_id, max_wait=max_wait)
+        return task_id, self.results(task_id, max_wait=max_wait, **kwargs)
