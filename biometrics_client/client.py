@@ -61,7 +61,7 @@ class ElementHumanBiometrics:
         self.auth = auth
         self.timeout = timeout
         self.url = url
-        self._verbose = verbose
+        self.verbose = verbose
 
     @property
     def credentials(self) -> Dict[str, str]:
@@ -69,7 +69,7 @@ class ElementHumanBiometrics:
         return self.auth.credentials
 
     def _print(self, msg: str) -> None:
-        if self._verbose:
+        if self.verbose:
             print(msg)
 
     def _response_validator(self, r: Response) -> None:
