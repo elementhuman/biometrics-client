@@ -33,8 +33,9 @@ class Auth1(BiometricsAuth):
     """First form of Biometrics API authorization.
 
     Args:
-        access_key (str): an access key for the API
-        secret_key (str): a secret key for the API
+        access_key (str): an access key for the API.
+        secret_key (str): a secret key for the API.
+
     """
 
     def __init__(self, access_key: str, secret_key: str) -> None:
