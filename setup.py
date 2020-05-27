@@ -16,7 +16,7 @@ def read_readme() -> str:
 
 setup(
     name="biometrics_client",
-    version="0.1.0",
+    version="0.2.0",
     author_email="sre@crowdemotion.com",
     description=read_readme(),
     packages=find_packages(exclude=["tests"]),
