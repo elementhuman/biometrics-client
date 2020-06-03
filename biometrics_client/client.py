@@ -62,6 +62,7 @@ class ElementHumanBiometrics:
         self.timeout = timeout
         self.url = url
         self.verbose = verbose
+        self.default_headers = {"User-Agent": "Biometrics-Client 0.2.0"}
 
     @property
     def credentials(self) -> Dict[str, str]:
@@ -137,7 +138,11 @@ class ElementHumanBiometrics:
             data=multipart_data,
             timeout=self.timeout,
             params=dict(analyses=analyses),
-            headers={"Content-Type": multipart_data.content_type, **self.credentials},
+            headers={
+                "Content-Type": multipart_data.content_type,
+                **self.credentials,
+                **self.default_headers,
+            },
             **kwargs,
         )
         self._response_validator(r)
@@ -177,7 +182,7 @@ class ElementHumanBiometrics:
             r = requests.get(
                 urljoin(self.url, f"results/{task_id}"),
                 timeout=self.timeout,
-                headers=self.credentials,
+                headers={**self.credentials, **self.default_headers},
                 **kwargs,
             )
             if not_ready_signal(r):
