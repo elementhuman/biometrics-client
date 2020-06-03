@@ -198,7 +198,7 @@ class ElementHumanBiometrics:
             max_wait=max_wait,
             sleep_time=check_interval,
             handled_exceptions=(ResultsNotReady,),
-            timeout_exception=requests.ConnectTimeout(
+            timeout_exception=requests.exceptions.ConnectTimeout(
                 f"Timed out waiting for task '{task_id}'"
             ),
         )
