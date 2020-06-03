@@ -5,6 +5,7 @@
 
 """
 import requests
+from biometrics_client import __version__
 from biometrics_client.auth import BiometricsAuth
 from biometrics_client.exceptions import ResultsNotReady
 from biometrics_client._utils import (
@@ -16,6 +17,9 @@ from pathlib import Path
 from urllib.parse import urljoin
 from requests.models import Response
 from typing import Any, Dict, List, Union, Tuple, Optional
+
+
+_DEFAULT_HEADERS = {"User-Agent": f"Biometrics-Client v{__version__}"}
 
 
 class ElementHumanBiometrics:
@@ -62,7 +66,6 @@ class ElementHumanBiometrics:
         self.timeout = timeout
         self.url = url
         self.verbose = verbose
-        self.default_headers = {"User-Agent": "Biometrics-Client 0.2.0"}
 
     @property
     def credentials(self) -> Dict[str, str]:
@@ -141,7 +144,7 @@ class ElementHumanBiometrics:
             headers={
                 "Content-Type": multipart_data.content_type,
                 **self.credentials,
-                **self.default_headers,
+                **_DEFAULT_HEADERS,
             },
             **kwargs,
         )
@@ -182,7 +185,7 @@ class ElementHumanBiometrics:
             r = requests.get(
                 urljoin(self.url, f"results/{task_id}"),
                 timeout=self.timeout,
-                headers={**self.credentials, **self.default_headers},
+                headers={**self.credentials, **_DEFAULT_HEADERS},
                 **kwargs,
             )
             if not_ready_signal(r):
