@@ -8,9 +8,9 @@ import io
 import time
 from pathlib import Path
 from os.path import basename
-from requests import Response
-from requests_toolbelt import MultipartEncoder
-from typing import Any, Callable, Type, Union, Tuple, Optional, Dict
+from requests import Response  # type: ignore
+from requests_toolbelt import MultipartEncoder  # type: ignore
+from typing import Any, Callable, Type, Tuple, Optional
 
 
 def _open_as_bytes(path: Path) -> io.BytesIO:
@@ -88,7 +88,7 @@ def create_multipart_encoder(
 
     """
 
-    def make_value(path: Path) -> Dict[str, Union[bytes, str]]:
+    def make_value(path: Path) -> Tuple[str, io.BytesIO, str]:
         return (
             basename(str(path)),
             _open_as_bytes(path),

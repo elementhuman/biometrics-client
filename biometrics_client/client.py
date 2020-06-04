@@ -16,7 +16,7 @@ from biometrics_client._utils import (
 from pathlib import Path
 from urllib.parse import urljoin
 from requests.models import Response
-from typing import Any, Dict, List, Union, Tuple, Optional
+from typing import Any, Dict, List, Union, Tuple, Optional, cast
 
 
 _DEFAULT_HEADERS = {"User-Agent": f"Biometrics-Client v{__version__}"}
@@ -96,7 +96,7 @@ class ElementHumanBiometrics:
         """
         r = requests.get(urljoin(self.url, "ping"), **kwargs)
         self._response_validator(r)
-        return r.json()
+        return cast(dict, r.json())
 
     def apply(
         self,
@@ -149,7 +149,7 @@ class ElementHumanBiometrics:
             **kwargs,
         )
         self._response_validator(r)
-        return r.json()
+        return cast(dict, r.json())
 
     def results(
         self,
@@ -191,9 +191,9 @@ class ElementHumanBiometrics:
             if not_ready_signal(r):
                 raise ResultsNotReady(r.text)
             self._response_validator(r)
-            return r.json()
+            return cast(dict, r.json())
 
-        return task_waiter(
+        output = task_waiter(
             func=fetch,
             max_wait=max_wait,
             sleep_time=check_interval,
@@ -202,6 +202,7 @@ class ElementHumanBiometrics:
                 f"Timed out waiting for task '{task_id}'"
             ),
         )
+        return cast(dict, output)
 
     def apply_and_wait(
         self,
@@ -253,6 +254,6 @@ class ElementHumanBiometrics:
             analyses=analyses,
             **kwargs,
         )
-        task_id = task["response"]["task_id"]
+        task_id = task["response"]["task_id"]  # type: ignore
         self._print(f"Upload Complete. Task ID: {task_id}.")
         return task_id, self.results(task_id, max_wait=max_wait, **kwargs)
