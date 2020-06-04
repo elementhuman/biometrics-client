@@ -9,3 +9,4 @@ from biometrics_client.client import ElementHumanBiometrics
 
 
 __version__ = "0.2.0"
+USER_AGENT = f"Biometrics-Client v{__version__}"
