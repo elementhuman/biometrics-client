@@ -5,7 +5,7 @@
 
 """
 import requests
-from biometrics_client import USER_AGENT
+from biometrics_client import __version__
 from biometrics_client.auth import BiometricsAuth
 from biometrics_client.exceptions import ResultsNotReady
 from biometrics_client._utils import (
@@ -19,7 +19,7 @@ from requests.models import Response
 from typing import Any, Dict, List, Union, Tuple, Optional
 
 
-_DEFAULT_HEADERS = {"User-Agent": USER_AGENT}
+_DEFAULT_HEADERS = {"User-Agent": f"Biometrics-Client v{__version__}"}
 
 
 class ElementHumanBiometrics:
