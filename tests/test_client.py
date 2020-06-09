@@ -32,7 +32,7 @@ def test_apply(dummy_ehb_client: client.ElementHumanBiometrics) -> None:
         responses.POST,
         url=urljoin(dummy_ehb_client.url, "apply"),
         json=APPLY_PAYLOAD,
-        status=200,
+        status=202,
     )
     assert dummy_ehb_client.apply(TEST_VIDEO_PATH) == APPLY_PAYLOAD
 
