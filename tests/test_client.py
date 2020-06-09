@@ -54,7 +54,7 @@ def test_apply_and_wait(dummy_ehb_client: client.ElementHumanBiometrics) -> None
         responses.POST,
         url=urljoin(dummy_ehb_client.url, "apply"),
         json=APPLY_PAYLOAD,
-        status=200,
+        status=202,
     )
     responses.add(
         responses.GET,
