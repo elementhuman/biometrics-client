@@ -37,5 +37,5 @@ unit_test:
   only:
     - merge_requests
   script:
-    - python setup.py install
+    - python setup.py develop
     - bash tests/run.sh
