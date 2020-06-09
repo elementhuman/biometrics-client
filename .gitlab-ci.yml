@@ -9,6 +9,7 @@ services:
 
 stages:
   - Static Analysis
+  - Test
 
 black:
   stage: Static Analysis
@@ -17,3 +18,24 @@ black:
   script:
     - pip install black==19.3b0
     - black --check biometrics_client
+
+safety:
+  stage: Static Analysis
+  script:
+  - pip install safety  # We want the latest of this.
+  - python setup.py install  # Only check the installed production packages.
+  - pip freeze | safety check --stdin  # This way so we check transitive dependencies.
+
+bandit:
+  stage: Static Analysis
+  script:
+  - pip install bandit  # We want the latest of this.
+  - bandit -r models biometrics_client
+
+unit_test:
+  stage: Test
+  only:
+    - merge_requests
+  script:
+    - python setup.py install
+    - bash tests/run.sh
