@@ -20,9 +20,12 @@ def test_auth2_type_error() -> None:
 
 def test_auth1_credentials() -> None:
     creds = dict(access_key="apples", secret_key="cats")
-    auth.Auth1(**creds).credentials == creds
+    assert auth.Auth1(**creds).credentials == {
+        "x-access-key": creds["access_key"],
+        "x-secret-key": creds["secret_key"],
+    }
 
 
 def test_auth2_credentials() -> None:
-    creds = dict(token="999")
-    auth.Auth2(**creds).credentials == creds
+    authorization = "999"
+    assert auth.Auth2(authorization).credentials == dict(authorization=authorization)
