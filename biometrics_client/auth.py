@@ -12,7 +12,7 @@ def _credentials_type_checker(credentials: Dict[str, str]) -> None:
         if not isinstance(k, str):
             raise TypeError(f"Expected key of type str, got {k}.")
         if not isinstance(v, str):
-            raise TypeError(f"Expected value of type str, got {v}.")
+            raise TypeError(f"Expected value of type str for key '{k}', got {v}.")
 
 
 class BiometricsAuth:
