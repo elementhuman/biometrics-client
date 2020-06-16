@@ -62,6 +62,10 @@ class ElementHumanBiometrics:
         url: str = "https://biometrics.elementapis.com/public/v0.1/",
         verbose: bool = True,
     ) -> None:
+        if not isinstance(url, str):
+            raise TypeError("`url` must be of type string.")
+        elif not url:
+            raise ValueError("`url` is of null length.")
         self.auth = auth
         self.timeout = timeout
         self.url = url
