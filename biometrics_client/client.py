@@ -65,7 +65,7 @@ class ElementHumanBiometrics:
         if not isinstance(url, str):
             raise TypeError("`url` must be of type string.")
         elif not url:
-            raise ValueError("`url` is of null length.")
+            raise ValueError("`url` is of length zero.")
         self.auth = auth
         self.timeout = timeout
         self.url = url
