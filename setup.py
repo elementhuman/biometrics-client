@@ -43,7 +43,7 @@ class CustomDevelop(develop):
 
 setup(
     name="biometrics_client",
-    version="0.3.1",
+    version="0.3.3",
     author_email="sre@crowdemotion.com",
     description=read_readme(),
     packages=find_packages(exclude=["tests"]),
