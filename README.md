@@ -12,13 +12,11 @@ pip install git+ssh://git@gitlab.com/elementhuman/biometricsclient.git
 
 ```python
 from pathlib import Path
-from biometrics_client import Auth1, ElementHumanBiometrics
+from biometrics_client import ElementHumanBiometrics
 
 biometrics = ElementHumanBiometrics(
-    auth=Auth1(
-        access_key="YOUR-ACCESS-KEY-HERE", 
-        secret_key="YOUR-SECRET-KEY-HERE"
-    )
+    access_key="YOUR-ACCESS-KEY-HERE", 
+    secret_key="YOUR-SECRET-KEY-HERE"
 )
 
 response = biometrics.apply_and_wait(
