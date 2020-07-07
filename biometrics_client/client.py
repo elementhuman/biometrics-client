@@ -32,14 +32,9 @@ class ElementHumanBiometrics:
         url (str): the URL for the API
         verbose (bool): if True print additional information.
 
-    Notes:
-        * Authorization (``auth``) type depends on the ``url``
-          being used. If unsure which form of authorization to use,
-          use ``Auth1``.
-
     Examples:
         >>> from pathlib import Path
-        >>> from biometrics_client import Auth1, ElementHumanBiometrics
+        >>> from biometrics_client import ElementHumanBiometrics
         ...
         >>> biometrics = ElementHumanBiometrics(
         ...     access_key="YOUR-ACCESS-KEY-HERE",
