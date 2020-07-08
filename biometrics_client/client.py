@@ -6,7 +6,6 @@
 """
 import requests
 from biometrics_client import __version__
-from biometrics_client.auth import BiometricsAuth
 from biometrics_client.exceptions import ResultsNotReady
 from biometrics_client._utils import (
     task_waiter,
@@ -26,26 +25,20 @@ class ElementHumanBiometrics:
     """Client for the Element Human Biometrics API.
 
     Args:
-        auth (BiometricsAuth): api authorization.
+        access_key (str): an access key for the API.
+        secret_key (str): a secret key for the API.
         timeout (int): the maximum amount of time to wait for a
             response from the server in seconds.
         url (str): the URL for the API
         verbose (bool): if True print additional information.
 
-    Notes:
-        * Authorization (``auth``) type depends on the ``url``
-          being used. If unsure which form of authorization to use,
-          use ``Auth1``.
-
     Examples:
         >>> from pathlib import Path
-        >>> from biometrics_client import Auth1, ElementHumanBiometrics
+        >>> from biometrics_client import ElementHumanBiometrics
         ...
         >>> biometrics = ElementHumanBiometrics(
-        ...    auth=Auth1(
-        ...         access_key="YOUR-ACCESS-KEY-HERE",
-        ...         secret_key="YOUR-SECRET-KEY-HERE"
-        ...     )
+        ...     access_key="YOUR-ACCESS-KEY-HERE",
+        ...     secret_key="YOUR-SECRET-KEY-HERE",
         ... )
         ...
         >>> response = biometrics.apply_and_wait(
@@ -57,16 +50,21 @@ class ElementHumanBiometrics:
 
     def __init__(
         self,
-        auth: BiometricsAuth,
+        access_key: str,
+        secret_key: str,
         timeout: int = 30,
         url: str = "https://biometrics.elementapis.com/public/v0.1/",
         verbose: bool = True,
     ) -> None:
-        if not isinstance(url, str):
-            raise TypeError("`url` must be of type string.")
-        elif not url:
-            raise ValueError("`url` is of length zero.")
-        self.auth = auth
+        if not isinstance(url, str) or not url:
+            raise TypeError("`url` must be a non-null string.")
+        elif not isinstance(access_key, str):
+            raise TypeError(f"`access_key` not of type str, got {access_key}.")
+        elif not isinstance(secret_key, str):
+            raise TypeError(f"`secret_key` not of type str, got {secret_key}.")
+        self._access_key = access_key
+        self._secret_key = access_key
+
         self.timeout = timeout
         self.url = url
         self.verbose = verbose
@@ -74,7 +72,7 @@ class ElementHumanBiometrics:
     @property
     def credentials(self) -> Dict[str, str]:
         """API Credentials"""
-        return self.auth.credentials
+        return {"x-access-key": self._access_key, "x-secret-key": self._secret_key}
 
     def _print(self, msg: str) -> None:
         if self.verbose:

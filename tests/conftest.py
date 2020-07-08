@@ -5,9 +5,9 @@
 
 """
 import pytest
-from biometrics_client import Auth1, ElementHumanBiometrics
+from biometrics_client import ElementHumanBiometrics
 
 
 @pytest.fixture()
 def dummy_ehb_client() -> ElementHumanBiometrics:
-    return ElementHumanBiometrics(Auth1("a", "b"))
+    return ElementHumanBiometrics(access_key="a", secret_key="b")
