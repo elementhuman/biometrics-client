@@ -63,7 +63,7 @@ class ElementHumanBiometrics:
         elif not isinstance(secret_key, str):
             raise TypeError(f"`secret_key` not of type str, got {secret_key}.")
         self._access_key = access_key
-        self._secret_key = access_key
+        self._secret_key = secret_key
 
         self.timeout = timeout
         self.url = url

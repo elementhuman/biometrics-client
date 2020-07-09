@@ -7,12 +7,19 @@
 import responses
 from urllib.parse import urljoin
 from biometrics_client import client
-from tests import TEST_VIDEO_PATH
+from tests import TEST_VIDEO_PATH, DUMMY_ACCESS_KEY, DUMMY_SECRET_KEY
 
 FAKE_TASK_ID: str = "fake-task-id"
 PING_PAYLOAD = dict(response="PONG", version="99")
 APPLY_PAYLOAD = dict(response=dict(task_id=FAKE_TASK_ID), version="99")
 RESULTS_PAYLOAD = dict(response=dict(frames={}, summary={}), version="99")
+
+
+def test_credentials(dummy_ehb_client: client.ElementHumanBiometrics) -> None:
+    assert dummy_ehb_client.credentials == {
+        "x-access-key": DUMMY_ACCESS_KEY,
+        "x-secret-key": DUMMY_SECRET_KEY,
+    }
 
 
 @responses.activate
