@@ -258,5 +258,5 @@ class ElementHumanBiometrics:
             **kwargs,
         )
         task_id = task["response"]["task_id"]  # type: ignore
-        self._print(f"Upload Complete. Task ID: {task_id}.")
+        self._print(f"Upload Complete.")
         return task_id, self.results(task_id, max_wait=max_wait, **kwargs)
