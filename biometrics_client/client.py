@@ -6,7 +6,7 @@
 """
 import requests
 from biometrics_client import __version__
-from biometrics_client.exceptions import ResultsNotReady
+from biometrics_client.exceptions import BiometricsClientError, ResultsNotReady
 from biometrics_client._utils import (
     task_waiter,
     create_multipart_encoder,
@@ -82,8 +82,9 @@ class ElementHumanBiometrics:
         try:
             r.raise_for_status()
         except requests.exceptions.RequestException as error:
-            self._print(r.text)
-            raise error
+            raise BiometricsClientError(
+                f"Requested failed with message: {r.text}."
+            ) from error
 
     def ping(self, **kwargs: Any) -> Dict[str, str]:
         """Ping the API.
