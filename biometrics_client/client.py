@@ -81,7 +81,8 @@ class ElementHumanBiometrics:
         if self.verbose:
             print(msg)
 
-    def _response_validator(self, r: Response) -> None:
+    @staticmethod
+    def _response_validator(r: Response) -> None:
         try:
             r.raise_for_status()
         except requests.exceptions.RequestException as error:
