@@ -6,7 +6,10 @@
 """
 import requests
 from biometrics_client import __version__
-from biometrics_client.exceptions import BiometricsClientError, BiometricsResultsNotReadyError
+from biometrics_client.exceptions import (
+    BiometricsClientError,
+    BiometricsResultsNotReadyError,
+)
 from biometrics_client._utils import (
     task_waiter,
     create_multipart_encoder,
