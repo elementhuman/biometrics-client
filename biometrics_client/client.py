@@ -6,7 +6,7 @@
 """
 import requests
 from biometrics_client import __version__
-from biometrics_client.exceptions import BiometricsClientError, ResultsNotReady
+from biometrics_client.exceptions import BiometricsClientError, BiometricsResultsNotReadyError
 from biometrics_client._utils import (
     task_waiter,
     create_multipart_encoder,
@@ -192,7 +192,7 @@ class ElementHumanBiometrics:
                 **kwargs,
             )
             if not_ready_signal(r):
-                raise ResultsNotReady(r.text)
+                raise BiometricsResultsNotReadyError(r.text)
             self._response_validator(r)
             return cast(dict, r.json())
 
@@ -200,7 +200,7 @@ class ElementHumanBiometrics:
             func=fetch,
             max_wait=max_wait,
             sleep_time=check_interval,
-            handled_exceptions=(ResultsNotReady,),
+            handled_exceptions=(BiometricsResultsNotReadyError,),
             timeout_exception=requests.exceptions.ConnectTimeout(
                 f"Timed out waiting for task '{task_id}'"
             ),

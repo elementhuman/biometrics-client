@@ -7,8 +7,12 @@
 
 
 class BiometricsClientError(Exception):
+    """Base biometrics client error"""
+
     pass
 
 
-class ResultsNotReady(BiometricsClientError):
+class BiometricsResultsNotReadyError(BiometricsClientError):
+    """Results not ready error."""
+
     pass
