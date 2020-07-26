@@ -90,11 +90,11 @@ class ElementHumanBiometrics:
         except requests.exceptions.RequestException as error:
             msg = f"Bad response from biometrics api, got message: {r.text}."
             if 400 <= r.status_code < 500:
-                raise BiometricsApiRequestError(msg) from error
+                raise BiometricsApiRequestError(msg)
             elif 500 <= r.status_code < 600:
-                raise BiometricsApiInternalError(msg) from error
+                raise BiometricsApiInternalError(msg)
             else:
-                raise BiometricsApiError(msg) from error
+                raise BiometricsApiError(msg)
 
     def ping(self, **kwargs: Any) -> Dict[str, str]:
         """Ping the API.
