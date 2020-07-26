@@ -7,8 +7,10 @@
 import requests
 from biometrics_client import __version__
 from biometrics_client.exceptions import (
-    BiometricsClientError,
-    BiometricsResultsNotReadyError,
+    BiometricsApiError,
+    BiometricsApiRequestError,
+    BiometricsApiInternalError,
+    BiometricsApiResultsNotReadyError,
 )
 from biometrics_client._utils import (
     task_waiter,
@@ -86,9 +88,13 @@ class ElementHumanBiometrics:
         try:
             r.raise_for_status()
         except requests.exceptions.RequestException as error:
-            raise BiometricsClientError(
-                f"Requested failed with message: {r.text}."
-            ) from error
+            msg = f"Bad response from biometrics api, got message: {r.text}."
+            if 400 <= r.status_code < 500:
+                raise BiometricsApiRequestError(msg) from error
+            elif 500 <= r.status_code < 600:
+                raise BiometricsApiInternalError(msg) from error
+            else:
+                raise BiometricsApiError(msg) from error
 
     def ping(self, **kwargs: Any) -> Dict[str, str]:
         """Ping the API.
@@ -196,7 +202,7 @@ class ElementHumanBiometrics:
                 **kwargs,
             )
             if not_ready_signal(r):
-                raise BiometricsResultsNotReadyError(r.text)
+                raise BiometricsApiResultsNotReadyError(r.text)
             self._response_validator(r)
             return cast(dict, r.json())
 
@@ -204,7 +210,7 @@ class ElementHumanBiometrics:
             func=fetch,
             max_wait=max_wait,
             sleep_time=check_interval,
-            handled_exceptions=(BiometricsResultsNotReadyError,),
+            handled_exceptions=(BiometricsApiResultsNotReadyError,),
             timeout_exception=requests.exceptions.ConnectTimeout(
                 f"Timed out waiting for task '{task_id}'"
             ),
