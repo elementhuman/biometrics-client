@@ -203,7 +203,7 @@ class ElementHumanBiometrics:
                 **kwargs,
             )
             if not_ready_signal(r):
-                raise BiometricsApiResultsNotReadyError(r.text)
+                raise BiometricsApiResultsNotReadyError(format_error_message(r))
             self._response_validator(r)
             return cast(dict, r.json())
 
