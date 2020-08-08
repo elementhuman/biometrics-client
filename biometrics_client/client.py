@@ -13,9 +13,10 @@ from biometrics_client.exceptions import (
     BiometricsApiResultsNotReadyError,
 )
 from biometrics_client._utils import (
-    task_waiter,
     create_multipart_encoder,
+    format_error_message,
     not_ready_signal,
+    task_waiter,
 )
 from pathlib import Path
 from urllib.parse import urljoin
@@ -87,8 +88,8 @@ class ElementHumanBiometrics:
     def _response_validator(r: Response) -> None:
         try:
             r.raise_for_status()
-        except requests.exceptions.RequestException as error:
-            msg = f"Bad response from biometrics api, got message: {r.text}."
+        except requests.exceptions.RequestException:
+            msg = f"Bad response from biometrics api, got message: {format_error_message(r)}."
             if 400 <= r.status_code < 500:
                 raise BiometricsApiRequestError(msg)
             elif 500 <= r.status_code < 600:

@@ -6,11 +6,14 @@
 """
 import io
 import time
+import logging
 from pathlib import Path
 from os.path import basename
 from requests import Response  # type: ignore
 from requests_toolbelt import MultipartEncoder  # type: ignore
 from typing import Any, Callable, Type, Tuple, Optional
+
+log = logging.getLogger(__name__)
 
 
 def _open_as_bytes(path: Path) -> io.BytesIO:
@@ -72,6 +75,23 @@ def not_ready_signal(r: Response) -> bool:
 
     """
     return r.status_code == 400 and "not ready" in r.text.lower()
+
+
+def format_error_message(r: Response) -> str:
+    """Format an error message.
+
+    Args:
+        r (Response): a response object
+
+    Returns:
+        str
+
+    """
+    try:
+        return str(r.json().get("message", r.json()))
+    except BaseException:
+        log.exception("Message extraction failed, got %s.", r.text)
+        return str(r.text)
 
 
 def create_multipart_encoder(
