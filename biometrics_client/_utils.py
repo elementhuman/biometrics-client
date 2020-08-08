@@ -88,7 +88,11 @@ def format_error_message(r: Response) -> str:
 
     """
     try:
-        return str(r.json().get("message", r.json()))
+        payload = r.json()
+        if isinstance(payload, dict) and set(payload.keys()) == {"message"}:
+            return str(payload["message"])
+        else:
+            return str(r.text)
     except BaseException:
         log.exception("Message extraction failed, got %s.", r.text)
         return str(r.text)
