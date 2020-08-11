@@ -89,7 +89,10 @@ class ElementHumanBiometrics:
         try:
             r.raise_for_status()
         except requests.exceptions.RequestException:
-            msg = f"Bad response from biometrics api, got message: {format_error_message(r)}."
+            msg = (
+                f"Bad response from biometrics api, "
+                f"got message: {format_error_message(r).rstrip('.')}."
+            )
             if 400 <= r.status_code < 500:
                 raise BiometricsApiRequestError(msg)
             elif 500 <= r.status_code < 600:
