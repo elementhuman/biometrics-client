@@ -1,1 +1,5 @@
 site/*
+/venv/
+.idea
+biometrics_client/__pycache__
+docs/.DS_Store
