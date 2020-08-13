@@ -1,7 +1,7 @@
 """
 
-    Client
-    ~~~~~~
+    API Client
+    ----------
 
 """
 import requests
@@ -37,20 +37,6 @@ class ElementHumanBiometrics:
             response from the server in seconds.
         url (str): the URL for the API
         verbose (bool): if True print additional information.
-
-    Examples:
-        >>> from pathlib import Path
-        >>> from biometrics_client import ElementHumanBiometrics
-        ...
-        >>> client = ElementHumanBiometrics(
-        ...     access_key="YOUR-ACCESS-KEY-HERE",
-        ...     secret_key="YOUR-SECRET-KEY-HERE",
-        ... )
-        ...
-        >>> analysis = client.apply_and_wait(
-        ...     video_file_path=Path("path/to/video/file.mp4"),
-        ...     analyses=["emotion"],
-        ... )
 
     """
 
@@ -129,19 +115,15 @@ class ElementHumanBiometrics:
             metadata_file_path (Path, optional): a path to a metadata file.
             analyses (str, list, tuple): analyses to perform on the video.
 
-                Options:
-
-                    * if a string, must be 'all'
-
-                    * if a list of strings or a tuple of strings
-                        defining analyses to perform. These can be any of
-                        the following:
-
-                            * 'face': Face bound box.
-                            * 'eye': Eye bounding boxes. Depends on: 'face'.
-                            * 'emotion': compute Ekman emotions for the video,
-                                    along with quality metrics. Depends on: 'face'.
-                            * 'gaze': eye gaze Depends on: 'face', 'eye'.
+                * if a string, must be 'all'
+                * if a list of strings or a tuple of strings
+                    defining analyses to perform. These can be any of
+                    the following:
+                        * 'face': Face bound box.
+                        * 'eye': Eye bounding boxes. Depends on: 'face'.
+                        * 'emotion': compute Ekman emotions for the video,
+                                along with quality metrics. Depends on: 'face'.
+                        * 'gaze': eye gaze Depends on: 'face', 'eye'.
 
             **kwargs (Keyword Args): Keyword arguments to pass to
                 ``requests``.
@@ -189,10 +171,6 @@ class ElementHumanBiometrics:
         Returns:
             response (dict)
 
-        Warnings:
-            * a response with a status code of 400 will be
-              returned if the results are not yet ready.
-
         Raises:
             * ``BiometricsApiResultsNotReadyError`` is results are not yet ready.
 
@@ -237,19 +215,15 @@ class ElementHumanBiometrics:
             metadata_file_path (Path, optional): a path to a metadata file.
             analyses (str, list, tuple): analyses to perform on the video.
 
-                Options:
-
-                    * if a string, must be 'all'
-
-                    * if a list of strings or a tuple of strings
-                        defining analyses to perform. These can be any of
-                        the following:
-
-                            * 'face': Face bound box.
-                            * 'eye': Eye bounding boxes. Depends on: 'face'.
-                            * 'emotion': compute Ekman emotions for the video,
-                                    along with quality metrics. Depends on: 'face'.
-                            * 'gaze': eye gaze Depends on: 'face', 'eye'.
+                * if a string, must be 'all'
+                * if a list of strings or a tuple of strings
+                    defining analyses to perform. These can be any of
+                    the following:
+                        * 'face': Face bound box.
+                        * 'eye': Eye bounding boxes. Depends on: 'face'.
+                        * 'emotion': compute Ekman emotions for the video,
+                                along with quality metrics. Depends on: 'face'.
+                        * 'gaze': eye gaze Depends on: 'face', 'eye'.
 
             max_wait (int, optional): the maximum amount of time to wait
                 for the results in seconds.
