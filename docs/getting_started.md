@@ -30,7 +30,7 @@ response = client.apply(
 )
 ```
 
-this gives us a response object that looks like this:
+This gives us a response object that looks like the following:
 
 ```json
 {"response": {"task_id": "TASK-ID"}, "version": "0.5.0"}
