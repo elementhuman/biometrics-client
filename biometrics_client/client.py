@@ -173,7 +173,7 @@ class ElementHumanBiometrics:
             response (dict)
 
         Raises:
-            * ``BiometricsApiResultsNotReadyError`` is results are not yet ready.
+            BiometricsApiResultsNotReadyError: if results are not yet ready.
 
         """
 
@@ -238,7 +238,7 @@ class ElementHumanBiometrics:
                 response (dict): the response payload.
 
         Raises:
-            * ``BiometricsApiResultsNotReadyError`` is results are not yet ready.
+            BiometricsApiResultsNotReadyError: if results are not yet ready.
 
         """
         task = self.apply(
