@@ -76,7 +76,7 @@ class ElementHumanBiometrics:
         self.verbose = verbose
 
     @property
-    def credentials(self) -> Dict[str, str]:
+    def _credentials(self) -> Dict[str, str]:
         """API Credentials"""
         return {"x-access-key": self._access_key, "x-secret-key": self._secret_key}
 
@@ -160,7 +160,7 @@ class ElementHumanBiometrics:
             params=dict(analyses=analyses),
             headers={
                 "Content-Type": multipart_data.content_type,
-                **self.credentials,
+                **self._credentials,
                 **_DEFAULT_HEADERS,
             },
             **kwargs,
@@ -202,7 +202,7 @@ class ElementHumanBiometrics:
             r = requests.get(
                 urljoin(self.url, f"results/{task_id}"),
                 timeout=self.timeout,
-                headers={**self.credentials, **_DEFAULT_HEADERS},
+                headers={**self._credentials, **_DEFAULT_HEADERS},
                 **kwargs,
             )
             if not_ready_signal(r):
