@@ -7,7 +7,7 @@ the [Element Human](https://www.elementhuman.com) Biometrics API.
 
 In order to gain access to the Biometrics API you will need
 to sign up for the service. This can be done by sending an
-email to <support@elementhuman.com>.
+email to <hello@elementhuman.com>.
 
 ## Installation
 
