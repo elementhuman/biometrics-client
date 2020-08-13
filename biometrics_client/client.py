@@ -124,7 +124,7 @@ class ElementHumanBiometrics:
                       * 'eye': Eye bounding boxes. Depends on: 'face'.
                       * 'emotion': compute Ekman emotions for the video,
                                    along with quality metrics. Depends on: 'face'.
-                      * 'gaze': eye gaze Depends on: 'face', 'eye'.
+                      * 'gaze': eye gaze. Depends on: 'face', 'eye'.
 
             **kwargs (Keyword Args): Keyword arguments to pass to
                 ``requests``.
@@ -225,7 +225,7 @@ class ElementHumanBiometrics:
                       * 'eye': Eye bounding boxes. Depends on: 'face'.
                       * 'emotion': compute Ekman emotions for the video,
                                    along with quality metrics. Depends on: 'face'.
-                      * 'gaze': eye gaze Depends on: 'face', 'eye'.
+                      * 'gaze': eye gaze. Depends on: 'face', 'eye'.
 
             max_wait (int, optional): the maximum amount of time to wait
                 for the results in seconds.
