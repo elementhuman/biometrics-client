@@ -1,3 +1,0 @@
-# Reference
-
-::: ../biometrics_client
