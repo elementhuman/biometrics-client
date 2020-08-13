@@ -25,7 +25,7 @@ plugins:
             show_source: true
       custom_templates: templates
       watch:
-        - biometrics_client
+        - ../biometrics_client
 extra:
   social:
     - icon: fontawesome/brands/github
