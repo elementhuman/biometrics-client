@@ -95,7 +95,7 @@ The `analysis` payload you receive will be similar to the example provided below
         0.0,
         0.0
       ],
-      "metadata_video_timestamp_raw": [
+      "timestamp": [
         0.0,
         1.0,
         2.0
