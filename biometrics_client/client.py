@@ -1,7 +1,7 @@
 """
 
-    Client
-    ~~~~~~
+    API Client
+    ----------
 
 """
 import requests
@@ -38,20 +38,6 @@ class ElementHumanBiometrics:
         url (str): the URL for the API
         verbose (bool): if True print additional information.
 
-    Examples:
-        >>> from pathlib import Path
-        >>> from biometrics_client import ElementHumanBiometrics
-        ...
-        >>> biometrics = ElementHumanBiometrics(
-        ...     access_key="YOUR-ACCESS-KEY-HERE",
-        ...     secret_key="YOUR-SECRET-KEY-HERE",
-        ... )
-        ...
-        >>> response = biometrics.apply_and_wait(
-        ...     video_file_path=Path("path/to/video/file.mp4"),
-        ...     analyses=["emotion"],
-        ... )
-
     """
 
     def __init__(
@@ -76,7 +62,7 @@ class ElementHumanBiometrics:
         self.verbose = verbose
 
     @property
-    def credentials(self) -> Dict[str, str]:
+    def _credentials(self) -> Dict[str, str]:
         """API Credentials"""
         return {"x-access-key": self._access_key, "x-secret-key": self._secret_key}
 
@@ -129,19 +115,16 @@ class ElementHumanBiometrics:
             metadata_file_path (Path, optional): a path to a metadata file.
             analyses (str, list, tuple): analyses to perform on the video.
 
-                Options:
+                * if a string, must be 'all'
+                * if a list of strings or a tuple of strings
+                    defining analyses to perform. These can be any of
+                    the following:
 
-                    * if a string, must be 'all'
-
-                    * if a list of strings or a tuple of strings
-                        defining analyses to perform. These can be any of
-                        the following:
-
-                            * 'face': Face bound box.
-                            * 'eye': Eye bounding boxes. Depends on: 'face'.
-                            * 'emotion': compute Ekman emotions for the video,
-                                    along with quality metrics. Depends on: 'face'.
-                            * 'gaze': eye gaze Depends on: 'face', 'eye'.
+                      * 'face': Face bound box.
+                      * 'eye': Eye bounding boxes. Depends on: 'face'.
+                      * 'emotion': compute Ekman emotions for the video,
+                                   along with quality metrics. Depends on: 'face'.
+                      * 'gaze': eye gaze Depends on: 'face', 'eye'.
 
             **kwargs (Keyword Args): Keyword arguments to pass to
                 ``requests``.
@@ -160,7 +143,7 @@ class ElementHumanBiometrics:
             params=dict(analyses=analyses),
             headers={
                 "Content-Type": multipart_data.content_type,
-                **self.credentials,
+                **self._credentials,
                 **_DEFAULT_HEADERS,
             },
             **kwargs,
@@ -189,12 +172,8 @@ class ElementHumanBiometrics:
         Returns:
             response (dict)
 
-        Warnings:
-            * a response with a status code of 400 will be
-              returned if the results are not yet ready.
-
         Raises:
-            * ``ResultsNotReady`` is results are not yet ready.
+            * ``BiometricsApiResultsNotReadyError`` is results are not yet ready.
 
         """
 
@@ -202,7 +181,7 @@ class ElementHumanBiometrics:
             r = requests.get(
                 urljoin(self.url, f"results/{task_id}"),
                 timeout=self.timeout,
-                headers={**self.credentials, **_DEFAULT_HEADERS},
+                headers={**self._credentials, **_DEFAULT_HEADERS},
                 **kwargs,
             )
             if not_ready_signal(r):
@@ -237,19 +216,16 @@ class ElementHumanBiometrics:
             metadata_file_path (Path, optional): a path to a metadata file.
             analyses (str, list, tuple): analyses to perform on the video.
 
-                Options:
+                * if a string, must be 'all'
+                * if a list of strings or a tuple of strings
+                    defining analyses to perform. These can be any of
+                    the following:
 
-                    * if a string, must be 'all'
-
-                    * if a list of strings or a tuple of strings
-                        defining analyses to perform. These can be any of
-                        the following:
-
-                            * 'face': Face bound box.
-                            * 'eye': Eye bounding boxes. Depends on: 'face'.
-                            * 'emotion': compute Ekman emotions for the video,
-                                    along with quality metrics. Depends on: 'face'.
-                            * 'gaze': eye gaze Depends on: 'face', 'eye'.
+                      * 'face': Face bound box.
+                      * 'eye': Eye bounding boxes. Depends on: 'face'.
+                      * 'emotion': compute Ekman emotions for the video,
+                                   along with quality metrics. Depends on: 'face'.
+                      * 'gaze': eye gaze Depends on: 'face', 'eye'.
 
             max_wait (int, optional): the maximum amount of time to wait
                 for the results in seconds.
@@ -262,7 +238,7 @@ class ElementHumanBiometrics:
                 response (dict): the response payload.
 
         Raises:
-            * ``ResultsNotReady`` is results are not yet ready.
+            * ``BiometricsApiResultsNotReadyError`` is results are not yet ready.
 
         """
         task = self.apply(

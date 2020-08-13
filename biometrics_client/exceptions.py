@@ -1,7 +1,7 @@
 """
 
-    Exceptions
-    ~~~~~~~~~~
+    Package Exceptions
+    ------------------
 
 """
 

@@ -1,0 +1,40 @@
+site_name: Biometrics Client
+# ToDo: update to github pages url.
+site_url: https://www.elementhuman.com
+nav:
+    - Home: index.md
+    - Getting Started: getting_started.md
+    - Developer Reference: reference.md
+theme:
+  name: material
+markdown_extensions:
+  - attr_list
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - pymdownx.inlinehilite
+  - pymdownx.highlight:
+      linenums_style: pymdownx.inline
+  - pymdownx.superfences
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          rendering:
+            show_source: true
+      custom_templates: templates
+      watch:
+        - biometrics_client
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/CrowdEmotion
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/CrowdEmotion
+    - icon: fontawesome/brands/youtube
+      link: https://www.youtube.com/channel/UC-Ikyfg0cKidId3_zogSEcg
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/crowdemotion
+    - icon: fontawesome/brands/medium
+      link: https://medium.com/making-senses

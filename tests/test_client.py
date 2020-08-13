@@ -16,7 +16,7 @@ RESULTS_PAYLOAD = dict(response=dict(frames={}, summary={}), version="99")
 
 
 def test_credentials(dummy_ehb_client: client.ElementHumanBiometrics) -> None:
-    assert dummy_ehb_client.credentials == {
+    assert dummy_ehb_client._credentials == {
         "x-access-key": DUMMY_ACCESS_KEY,
         "x-secret-key": DUMMY_SECRET_KEY,
     }
