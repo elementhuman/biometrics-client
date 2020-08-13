@@ -42,12 +42,12 @@ class ElementHumanBiometrics:
         >>> from pathlib import Path
         >>> from biometrics_client import ElementHumanBiometrics
         ...
-        >>> biometrics = ElementHumanBiometrics(
+        >>> client = ElementHumanBiometrics(
         ...     access_key="YOUR-ACCESS-KEY-HERE",
         ...     secret_key="YOUR-SECRET-KEY-HERE",
         ... )
         ...
-        >>> response = biometrics.apply_and_wait(
+        >>> analysis = client.apply_and_wait(
         ...     video_file_path=Path("path/to/video/file.mp4"),
         ...     analyses=["emotion"],
         ... )
