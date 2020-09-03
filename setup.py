@@ -42,10 +42,13 @@ class CustomDevelop(develop):
 
 
 setup(
+    name="eh-biometrics-client",
+    version="0.0.1",
+    url="https://github.com/elementhuman/biometrics-client",
+    author="Element Human",
     description=read_readme(),
     packages=find_packages(exclude=["tests"]),
     install_requires=parse_reqs("requirements.txt"),
     extras_require={"test": ["pytest", "coverage"]},
-    author="Element Human",
     cmdclass={"develop": CustomDevelop},
 )
